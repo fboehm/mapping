@@ -1,5 +1,5 @@
 ---
-title: "SNP association mapping"
+title: "QTL scan with genetically dominant models in CC0001 by CC042 F2 mice"
 teaching: 30
 exercises: 30
 questions:

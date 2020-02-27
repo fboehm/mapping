@@ -1,5 +1,5 @@
 ---
-title: "SNP association mapping"
+title: "QTL scan with genetically dominant models in CC0001 by CC042 F2 mice"
 teaching: 30
 exercises: 30
 questions:
@@ -258,47 +258,9 @@ saveRDS(B_dom_perms, "../data/derived_data/perms_B_dominance_F2.rds")
 
 ~~~
 A_dom_perms <- readRDS("../data/derived_data/perms_A_dominance_F2.rds")
-~~~
-{: .r}
-
-
-
-~~~
-Warning in gzfile(file, "rb"): cannot open compressed file '../data/
-derived_data/perms_A_dominance_F2.rds', probable reason 'No such file or
-directory'
-~~~
-{: .error}
-
-
-
-~~~
-Error in gzfile(file, "rb"): cannot open the connection
-~~~
-{: .error}
-
-
-
-~~~
 B_dom_perms <- readRDS("../data/derived_data/perms_B_dominance_F2.rds")
 ~~~
 {: .r}
-
-
-
-~~~
-Warning in gzfile(file, "rb"): cannot open compressed file '../data/
-derived_data/perms_B_dominance_F2.rds', probable reason 'No such file or
-directory'
-~~~
-{: .error}
-
-
-
-~~~
-Error in gzfile(file, "rb"): cannot open the connection
-~~~
-{: .error}
 
 
 ~~~
@@ -328,9 +290,10 @@ quantile(A_dom_perms[, 1], c(0.95, 0.9))
 
 
 ~~~
-Error in quantile(A_dom_perms[, 1], c(0.95, 0.9)): object 'A_dom_perms' not found
+     95%      90% 
+3.163204 2.792136 
 ~~~
-{: .error}
+{: .output}
 
 
 
@@ -342,9 +305,10 @@ quantile(A_dom_perms[, 2], c(0.95, 0.9))
 
 
 ~~~
-Error in quantile(A_dom_perms[, 2], c(0.95, 0.9)): object 'A_dom_perms' not found
+     95%      90% 
+3.003136 2.764453 
 ~~~
-{: .error}
+{: .output}
 
 
 
@@ -356,9 +320,10 @@ quantile(A_dom_perms[, 3], c(0.95, 0.9))
 
 
 ~~~
-Error in quantile(A_dom_perms[, 3], c(0.95, 0.9)): object 'A_dom_perms' not found
+     95%      90% 
+3.029142 2.779337 
 ~~~
-{: .error}
+{: .output}
 
 
 
@@ -370,9 +335,10 @@ quantile(B_dom_perms[, 1], c(0.95, 0.9))
 
 
 ~~~
-Error in quantile(B_dom_perms[, 1], c(0.95, 0.9)): object 'B_dom_perms' not found
+     95%      90% 
+3.071265 2.770366 
 ~~~
-{: .error}
+{: .output}
 
 
 
@@ -384,9 +350,10 @@ quantile(B_dom_perms[, 2], c(0.95, 0.9))
 
 
 ~~~
-Error in quantile(B_dom_perms[, 2], c(0.95, 0.9)): object 'B_dom_perms' not found
+     95%      90% 
+3.089465 2.793354 
 ~~~
-{: .error}
+{: .output}
 
 
 
@@ -398,7 +365,8 @@ quantile(B_dom_perms[, 3], c(0.95, 0.9))
 
 
 ~~~
-Error in quantile(B_dom_perms[, 3], c(0.95, 0.9)): object 'B_dom_perms' not found
+     95%      90% 
+3.235467 2.865512 
 ~~~
-{: .error}
+{: .output}
 

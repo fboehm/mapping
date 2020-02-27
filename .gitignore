@@ -1,4 +1,6 @@
 *.pyc
+.jekyll-cache
+
 *~
 .DS_Store
 .ipynb_checkpoints
@@ -14,3 +16,4 @@ fig/.Rhistory
 files/Gatti_MammGen_2018.pptx
 scripts/
 
+.Rproj.user

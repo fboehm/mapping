@@ -21,6 +21,7 @@ knitr_fig_path("14-")
 First, we read in the saved data files. These contain the genome map, genotype probabilities, and trait values.
 
 ```{r}
+library(magrittr)
 map <- readRDS("../data/derived_data/map.rds")
 probs <- readRDS("../data/derived_data/probs.rds")
 pheno <- readRDS("../data/derived_data/pheno.rds")

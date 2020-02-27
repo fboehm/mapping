@@ -19,6 +19,7 @@ First, we read in the saved data files. These contain the genome map, genotype p
 
 
 ~~~
+library(magrittr)
 map <- readRDS("../data/derived_data/map.rds")
 probs <- readRDS("../data/derived_data/probs.rds")
 pheno <- readRDS("../data/derived_data/pheno.rds")

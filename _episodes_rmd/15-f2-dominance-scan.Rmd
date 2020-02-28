@@ -20,6 +20,46 @@ knitr_fig_path("15-")
 ```
 
 
+```{r, include=FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("14-")
+```
+
+First, we read in the saved data files. These contain the genome map, genotype probabilities, and trait values.
+
+```{r}
+library(magrittr)
+map <- readRDS("../data/derived_data/map.rds")
+probs <- readRDS("../data/derived_data/probs.rds")
+pheno <- readRDS("../data/derived_data/pheno.rds")
+```
+
+We tweak the rownames so that subjects' phenotype values can be matched with their genotypes. We also create a set of vectors to indicate batch number.
+
+```{r}
+rownames(pheno) <- rownames(probs$`1`)
+batch <- tibble::tibble(batch1 = pheno$batch == 1, batch2 = pheno$batch == 2, batch3 = pheno$batch == 3) %>%
+  purrr::map_df(.f = as.numeric) %>%
+  as.matrix %>%
+  (function(x) {rownames(x) <- rownames(probs$`1`); return(x)})
+```
+
+We want to incorporate polygenic effects into our models, so we calculate a relatedness matrix. 
+
+```{r}
+kinship <- qtl2::calc_kinship(probs)
+```
+
+Now, we can perform the QTL scans.
+
+
+```{r, aprobs}
+aprobs <- qtl2::genoprob_to_alleleprob(probs)
+s1out_ap <- qtl2::scan1(genoprobs = aprobs, pheno = pheno[ , 1:3], kinship = kinship, addcovar = cbind(batch, pheno$sex), reml = TRUE, cores = 0)
+```
+
+
+
 ## Function to convert genotype probabilities to binary
 
 Our goal is to recode the genotypes according to dominance models and then do univariate QTL scans with those recoded genotypes.

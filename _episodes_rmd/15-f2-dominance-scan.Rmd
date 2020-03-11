@@ -101,7 +101,7 @@ probs_B_dominant <- probs %>%
 A_dom<- qtl2::scan1(genoprobs = probs_A_dominant, pheno = pheno[, 1:3], addcovar = cbind(batch, pheno$sex), kinship = kinship, reml = TRUE, cores = 0)
 ```
 
-```{r scan1_A_dominant}
+```{r}
 B_dom<- qtl2::scan1(genoprobs = probs_B_dominant, pheno = pheno[, 1:3], addcovar = cbind(batch, pheno$sex), kinship = kinship, reml = TRUE, cores = 0)
 ```
 

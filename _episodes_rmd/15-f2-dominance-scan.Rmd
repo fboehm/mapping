@@ -78,7 +78,7 @@ sum_columns <- function(x, dominant_allele = "A"){
   out <- x[, da_numeric, ] + x[, 2, ]
   return(out)
 }
-sum_columns(pp) %>% array(dim = c(nrow(.), 1, ncol(.)))
+#sum_columns(pp) %>% array(dim = c(nrow(.), 1, ncol(.)))
 
 probs_A_dominant <- probs %>%
   purrr::map(.f = function(x){

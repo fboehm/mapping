@@ -18,7 +18,6 @@ source: Rmd
 
 
 
-
 First, we read in the saved data files. These contain the genome map, genotype probabilities, and trait values.
 
 
@@ -88759,14 +88758,14 @@ qtl2::plot_scan1(A_dom[, 2, drop = FALSE], map$`7`)
 ~~~
 {: .r}
 
-<img src="../fig/rmd-14-unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" />
+<img src="../fig/rmd-15-unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" />
 
 ~~~
 qtl2::plot_scan1(A_dom[, 3, drop = FALSE], map$`7`)
 ~~~
 {: .r}
 
-<img src="../fig/rmd-14-unnamed-chunk-10-2.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" />
+<img src="../fig/rmd-15-unnamed-chunk-10-2.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" />
 
 
 ~~~
@@ -88774,14 +88773,14 @@ qtl2::plot_scan1(B_dom[, 2, drop = FALSE], map$`7`)
 ~~~
 {: .r}
 
-<img src="../fig/rmd-14-unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" />
+<img src="../fig/rmd-15-unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" />
 
 ~~~
 qtl2::plot_scan1(B_dom[, 3, drop = FALSE], map$`7`)
 ~~~
 {: .r}
 
-<img src="../fig/rmd-14-unnamed-chunk-11-2.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" />
+<img src="../fig/rmd-15-unnamed-chunk-11-2.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" />
 
 
 

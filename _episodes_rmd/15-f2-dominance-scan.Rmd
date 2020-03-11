@@ -20,10 +20,6 @@ knitr_fig_path("15-")
 ```
 
 
-```{r, include=FALSE}
-source("../bin/chunk-options.R")
-knitr_fig_path("14-")
-```
 
 First, we read in the saved data files. These contain the genome map, genotype probabilities, and trait values.
 

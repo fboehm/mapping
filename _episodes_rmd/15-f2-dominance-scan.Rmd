@@ -163,3 +163,49 @@ quantile(B_dom_perms[, 2], c(0.95, 0.9))
 quantile(B_dom_perms[, 3], c(0.95, 0.9))
 ```
 
+## Analysis for hets v. non-hets
+
+```{r}
+pr_hets <- probs %>%
+  purrr::map(.f = function(x){
+    x[, 1 , ] <- x[ , 3, ] + x[ , 1, ]
+    return(x[ , 1:2, ])
+  }) %>%
+  (function(x){attributes(x) <- attributes(probs); return(x)})
+s1out_het <- qtl2::scan1(genoprobs = pr_hets, 
+                         pheno = pheno[, 1:3], 
+                         addcovar = cbind(batch, pheno$sex), 
+                         kinship = kinship, 
+                         reml = TRUE, 
+                         cores = 1
+                         )
+qtl2::plot_scan1(s1out_het, map = map)
+```
+
+
+```{r, eval = FALSE}
+het_perms <- qtl2::scan1perm(genoprobs = pr_hets, 
+                             pheno = pheno[, 1:3], 
+                             addcovar = cbind(batch, pheno$sex), 
+                             kinship = kinship, 
+                             reml = TRUE, 
+                             cores = parallel::detectCores() - 1, 
+                             n_perm = 1000
+                             )
+saveRDS(het_perms, "../data/derived_data/het_perms.rds")
+```
+
+```{r}
+het_perms <- readRDS("../data/derived_data/het_perms.rds")
+summary(het_perms)
+```
+
+```{r}
+s1out_het %>%
+  qtl2::find_peaks(map = map) %>%
+  dplyr::mutate(pvalue = purrr::map2_dbl(.x = lod, .y = lodindex, .f = function(x, y) get_pvalue(x, het_perms[ , y])))
+```
+
+
+
+

@@ -342,3 +342,77 @@ quantile(B_dom_perms[, 3], c(0.95, 0.9))
 ~~~
 {: .output}
 
+## Analysis for hets v. non-hets
+
+
+~~~
+pr_hets <- probs %>%
+  purrr::map(.f = function(x){
+    x[, 1 , ] <- x[ , 3, ] + x[ , 1, ]
+    return(x[ , 1:2, ])
+  }) %>%
+  (function(x){attributes(x) <- attributes(probs); return(x)})
+s1out_het <- qtl2::scan1(genoprobs = pr_hets, 
+                         pheno = pheno[, 1:3], 
+                         addcovar = cbind(batch, pheno$sex), 
+                         kinship = kinship, 
+                         reml = TRUE, 
+                         cores = 1
+                         )
+qtl2::plot_scan1(s1out_het, map = map)
+~~~
+{: .r}
+
+<img src="../fig/rmd-15-unnamed-chunk-17-1.png" title="plot of chunk unnamed-chunk-17" alt="plot of chunk unnamed-chunk-17" style="display: block; margin: auto;" />
+
+
+
+~~~
+het_perms <- qtl2::scan1perm(genoprobs = pr_hets, 
+                             pheno = pheno[, 1:3], 
+                             addcovar = cbind(batch, pheno$sex), 
+                             kinship = kinship, 
+                             reml = TRUE, 
+                             cores = parallel::detectCores() - 1, 
+                             n_perm = 1000
+                             )
+saveRDS(het_perms, "../data/derived_data/het_perms.rds")
+~~~
+{: .r}
+
+
+~~~
+het_perms <- readRDS("../data/derived_data/het_perms.rds")
+summary(het_perms)
+~~~
+{: .r}
+
+
+
+~~~
+LOD thresholds (1000 permutations)
+     LungCFU SpleenCFU IFNg
+0.05    3.24      3.31 3.31
+~~~
+{: .output}
+
+
+~~~
+s1out_het %>%
+  qtl2::find_peaks(map = map) %>%
+  dplyr::mutate(pvalue = purrr::map2_dbl(.x = lod, .y = lodindex, .f = function(x, y) get_pvalue(x, het_perms[ , y])))
+~~~
+{: .r}
+
+
+
+~~~
+  lodindex lodcolumn chr    pos      lod pvalue
+1        2 SpleenCFU   7 68.790 3.161447  0.071
+2        3      IFNg   7 78.895 4.033734  0.005
+~~~
+{: .output}
+
+
+
+

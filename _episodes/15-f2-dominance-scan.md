@@ -120,6 +120,19 @@ probs_A_dominant <- probs %>%
   purrr::map(.f = function(x){abind::abind(x, 1-x, along = 2)}) %>%
   purrr::map2(.y = probs, .f = function(x, y) {dimnames(x)[[1]] <- dimnames(y)[[1]]; dimnames(x)[[2]] <- c("dominant_allele", "recessive_allele"); dimnames(x)[[3]] <- dimnames(y)[[3]]; return(x)}) %>%
   (function(x){attributes(x) <- attributes(probs); return(x)})
+~~~
+{: .r}
+
+
+
+~~~
+Error in loadNamespace(name): there is no package called 'abind'
+~~~
+{: .error}
+
+
+
+~~~
 probs_B_dominant <- probs %>%
   purrr::map(.f = sum_columns, dominant_allele = "B") %>%
   purrr::map(.f = function(x){array(data = x, dim = c(nrow(x), 1, ncol(x)))}) %>%
@@ -130,16 +143,37 @@ probs_B_dominant <- probs %>%
 {: .r}
 
 
+
+~~~
+Error in loadNamespace(name): there is no package called 'abind'
+~~~
+{: .error}
+
+
 ~~~
 A_dom<- qtl2::scan1(genoprobs = probs_A_dominant, pheno = pheno[, 1:3], addcovar = cbind(batch, pheno$sex), kinship = kinship, reml = TRUE, cores = 0)
 ~~~
 {: .r}
 
 
+
+~~~
+Error in qtl2::scan1(genoprobs = probs_A_dominant, pheno = pheno[, 1:3], : object 'probs_A_dominant' not found
+~~~
+{: .error}
+
+
 ~~~
 B_dom<- qtl2::scan1(genoprobs = probs_B_dominant, pheno = pheno[, 1:3], addcovar = cbind(batch, pheno$sex), kinship = kinship, reml = TRUE, cores = 0)
 ~~~
 {: .r}
+
+
+
+~~~
+Error in qtl2::scan1(genoprobs = probs_B_dominant, pheno = pheno[, 1:3], : object 'probs_B_dominant' not found
+~~~
+{: .error}
 
 
 ~~~
@@ -150,15 +184,9 @@ qtl2::find_peaks(A_dom, map, threshold = 2)
 
 
 ~~~
-  lodindex lodcolumn chr    pos      lod
-1        1   LungCFU  14 65.779 2.246528
-2        1   LungCFU   X 20.011 2.129416
-3        2 SpleenCFU   7 68.790 6.773208
-4        3      IFNg   7 67.893 6.661577
-5        3      IFNg   9  2.476 2.160932
-6        3      IFNg  15 38.849 2.137946
+Error in align_scan1_map(scan1_output, map): object 'A_dom' not found
 ~~~
-{: .output}
+{: .error}
 
 
 ~~~
@@ -169,12 +197,9 @@ qtl2::find_peaks(B_dom, map, threshold = 2)
 
 
 ~~~
-  lodindex lodcolumn chr    pos      lod
-1        1   LungCFU   X 38.355 2.132873
-2        2 SpleenCFU   8 25.667 2.035441
-3        3      IFNg  10 62.215 2.120904
+Error in align_scan1_map(scan1_output, map): object 'B_dom' not found
 ~~~
-{: .output}
+{: .error}
 
 
 ~~~
@@ -182,14 +207,26 @@ qtl2::plot_scan1(A_dom[, 2, drop = FALSE], map$`7`)
 ~~~
 {: .r}
 
-<img src="../fig/rmd-15-unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" />
+
+
+~~~
+Error in align_scan1_map(x, map): object 'A_dom' not found
+~~~
+{: .error}
+
+
 
 ~~~
 qtl2::plot_scan1(A_dom[, 3, drop = FALSE], map$`7`)
 ~~~
 {: .r}
 
-<img src="../fig/rmd-15-unnamed-chunk-10-2.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" />
+
+
+~~~
+Error in align_scan1_map(x, map): object 'A_dom' not found
+~~~
+{: .error}
 
 
 ~~~
@@ -197,14 +234,26 @@ qtl2::plot_scan1(B_dom[, 2, drop = FALSE], map$`7`)
 ~~~
 {: .r}
 
-<img src="../fig/rmd-15-unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" />
+
+
+~~~
+Error in align_scan1_map(x, map): object 'B_dom' not found
+~~~
+{: .error}
+
+
 
 ~~~
 qtl2::plot_scan1(B_dom[, 3, drop = FALSE], map$`7`)
 ~~~
 {: .r}
 
-<img src="../fig/rmd-15-unnamed-chunk-11-2.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" />
+
+
+~~~
+Error in align_scan1_map(x, map): object 'B_dom' not found
+~~~
+{: .error}
 
 
 
@@ -228,9 +277,47 @@ saveRDS(B_dom_perms, "../data/derived_data/perms_B_dominance_F2.rds")
 
 ~~~
 A_dom_perms <- readRDS("../data/derived_data/perms_A_dominance_F2.rds")
+~~~
+{: .r}
+
+
+
+~~~
+Warning in gzfile(file, "rb"): cannot open compressed file '../data/
+derived_data/perms_A_dominance_F2.rds', probable reason 'No such file or
+directory'
+~~~
+{: .error}
+
+
+
+~~~
+Error in gzfile(file, "rb"): cannot open the connection
+~~~
+{: .error}
+
+
+
+~~~
 B_dom_perms <- readRDS("../data/derived_data/perms_B_dominance_F2.rds")
 ~~~
 {: .r}
+
+
+
+~~~
+Warning in gzfile(file, "rb"): cannot open compressed file '../data/
+derived_data/perms_B_dominance_F2.rds', probable reason 'No such file or
+directory'
+~~~
+{: .error}
+
+
+
+~~~
+Error in gzfile(file, "rb"): cannot open the connection
+~~~
+{: .error}
 
 
 ~~~
@@ -246,11 +333,9 @@ qtl2::find_peaks(A_dom, map) %>%
 
 
 ~~~
-  lodindex lodcolumn chr    pos      lod pvalue
-1        2 SpleenCFU   7 68.790 6.773208      0
-2        3      IFNg   7 67.893 6.661577      0
+Error in align_scan1_map(scan1_output, map): object 'A_dom' not found
 ~~~
-{: .output}
+{: .error}
 
 
 ~~~
@@ -262,10 +347,9 @@ quantile(A_dom_perms[, 1], c(0.95, 0.9))
 
 
 ~~~
-     95%      90% 
-3.163204 2.792136 
+Error in quantile(A_dom_perms[, 1], c(0.95, 0.9)): object 'A_dom_perms' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -277,10 +361,9 @@ quantile(A_dom_perms[, 2], c(0.95, 0.9))
 
 
 ~~~
-     95%      90% 
-3.003136 2.764453 
+Error in quantile(A_dom_perms[, 2], c(0.95, 0.9)): object 'A_dom_perms' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -292,10 +375,9 @@ quantile(A_dom_perms[, 3], c(0.95, 0.9))
 
 
 ~~~
-     95%      90% 
-3.029142 2.779337 
+Error in quantile(A_dom_perms[, 3], c(0.95, 0.9)): object 'A_dom_perms' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -307,10 +389,9 @@ quantile(B_dom_perms[, 1], c(0.95, 0.9))
 
 
 ~~~
-     95%      90% 
-3.071265 2.770366 
+Error in quantile(B_dom_perms[, 1], c(0.95, 0.9)): object 'B_dom_perms' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -322,10 +403,9 @@ quantile(B_dom_perms[, 2], c(0.95, 0.9))
 
 
 ~~~
-     95%      90% 
-3.089465 2.793354 
+Error in quantile(B_dom_perms[, 2], c(0.95, 0.9)): object 'B_dom_perms' not found
 ~~~
-{: .output}
+{: .error}
 
 
 
@@ -337,10 +417,9 @@ quantile(B_dom_perms[, 3], c(0.95, 0.9))
 
 
 ~~~
-     95%      90% 
-3.235467 2.865512 
+Error in quantile(B_dom_perms[, 3], c(0.95, 0.9)): object 'B_dom_perms' not found
 ~~~
-{: .output}
+{: .error}
 
 ## Analysis for hets v. non-hets
 
@@ -383,6 +462,27 @@ saveRDS(het_perms, "../data/derived_data/het_perms.rds")
 
 ~~~
 het_perms <- readRDS("../data/derived_data/het_perms.rds")
+~~~
+{: .r}
+
+
+
+~~~
+Warning in gzfile(file, "rb"): cannot open compressed file '../data/
+derived_data/het_perms.rds', probable reason 'No such file or directory'
+~~~
+{: .error}
+
+
+
+~~~
+Error in gzfile(file, "rb"): cannot open the connection
+~~~
+{: .error}
+
+
+
+~~~
 summary(het_perms)
 ~~~
 {: .r}
@@ -390,11 +490,9 @@ summary(het_perms)
 
 
 ~~~
-LOD thresholds (1000 permutations)
-     LungCFU SpleenCFU IFNg
-0.05    3.24      3.31 3.31
+Error in summary(het_perms): object 'het_perms' not found
 ~~~
-{: .output}
+{: .error}
 
 
 ~~~
@@ -407,11 +505,9 @@ s1out_het %>%
 
 
 ~~~
-  lodindex lodcolumn chr    pos      lod pvalue
-1        2 SpleenCFU   7 68.790 3.161447  0.071
-2        3      IFNg   7 78.895 4.033734  0.005
+Error in mean(perm_lods >= observed_lod): object 'het_perms' not found
 ~~~
-{: .output}
+{: .error}
 
 
 

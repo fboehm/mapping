@@ -131,7 +131,7 @@ for (j in 1:18){
   f1out <- list()
   for (i in 1:dim(pr)[[3]]){
     f1out[[i]] <- qtl2::fit1(genoprobs = pr[ , , i], 
-                         pheno = pheno[ , 1, drop = FALSE], #lung cfu trait
+                         pheno = pheno[ , 2, drop = FALSE], #lung cfu trait
                          kinship = kinship, 
                          addcovar = cbind(batch, pheno$sex), 
                          contrasts = cbind(mu=c(1, 1, 1), 
@@ -179,7 +179,7 @@ for (j in 1:18){
   f1out <- list()
   for (i in 1:dim(pr)[[3]]){
     f1out[[i]] <- qtl2::fit1(genoprobs = pr[ , , i], 
-                         pheno = pheno[ , 1, drop = FALSE], #lung cfu trait
+                         pheno = pheno[ , 3, drop = FALSE], #lung cfu trait
                          kinship = kinship, 
                          addcovar = cbind(batch, pheno$sex), 
                          contrasts = cbind(mu=c(1, 1, 1), 

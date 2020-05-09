@@ -62,6 +62,22 @@ Notice the absence of interaction QTLs above. All are main effects!
 qbmc2 <- qb.mcmc(cross = cr, pheno.col = 2, seed = 3448084, data = qb.data(cr, pheno.col = 2, fixcov = 4:8))
 ```
 
+### multi-trait analysis
 
+```{r}
+dat12 <- qb.data(cr, pheno.col = c(1,2))
+dat12$multiple.trait <- TRUE
+dat12$multiple.type <- "sur"
+out12 <- qb.mcmc(cr, data = dat12)
+```
+
+
+```{r}
+qb.bf(out12, item = "pattern")[[1]] # to display result, put [[1]] at end
+qb.bf(out12, item = "nqtl")
+sout <- qb.scanone(out12, type.scan = "LPD")
+class(sout) <- class(sout)[-1]
+plot(sout)
+```
 
 

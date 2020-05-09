@@ -1,0 +1,209 @@
+---
+title: "QTL scan in CC0001 by CC042 F2 mice"
+teaching: 30
+exercises: 30
+questions:
+- "How do I detect QTL that partition the lung CFU trait as in Figure 3 of 2019 MBio paper?"
+objectives:
+- Recode one homozygote class as being intermediate between the other homozygote and the hets.
+- Perform a basic QTL analysis.
+- Identify QTL with a genome scan.
+keypoints:
+- "."
+- "."
+source: Rmd
+---
+
+```{r, include=FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("17-")
+```
+
+
+
+First, we read in the saved data files. These contain the map, genotype probabilities, and trait values.
+
+```{r}
+library(magrittr)
+map <- readRDS("../data/derived_data/map.rds")
+probs <- readRDS("../data/derived_data/probs.rds")
+pheno <- readRDS("../data/derived_data/pheno.rds")
+```
+
+```{r}
+# prefix marker ids with Chr number
+for (i in c(1:19, "X")){
+  names(map[[i]]) <- paste0("Chr", i, "_", names(map[[i]]))
+}
+```
+
+
+We tweak the rownames so that subjects' phenotype values can be matched with their genotypes. We also create a set of vectors to indicate batch number.
+
+```{r}
+rownames(pheno) <- rownames(probs$`1`)
+batch <- tibble::tibble(batch1 = pheno$batch == 1, batch2 = pheno$batch == 2, batch3 = pheno$batch == 3) %>%
+  purrr::map_df(.f = as.numeric) %>%
+  as.matrix %>%
+  (function(x) {rownames(x) <- rownames(probs$`1`); return(x)})
+```
+
+We want to incorporate polygenic effects into our models, so we calculate a relatedness matrix. 
+
+```{r}
+kinship <- qtl2::calc_kinship(probs)
+```
+
+We see in Figure 3 of [Smith, et al. (2019)](https://mbio.asm.org/content/10/6/e02791-19)
+that the lung CFU trait is location shifted lower in the homozygotes (ie, the ) compared to the 
+F1. Additionally, we see that the CC042 mice are intermediate between the 
+CC001 and F1 (CC001 by CC042).
+
+Let's recode the genotypes to reflect this.
+
+Recoding #1:
+
+AA = 0
+AB = 2
+BB = 1
+
+```{r}
+probs_recode1a <- lapply(X = probs, FUN = function(x){
+  x[ , 1, ] <- (2 * x[ , 2, ] + x[ , 1, ]) / 2
+  x[ , 2, ] <- 1 - x[ , 1, ]
+  colnames(x)[1:2] <- c("A", "B")
+  return(x[ , 1:2, , drop = FALSE])
+})
+attributes(probs_recode1a) <- attributes(probs)
+attributes(probs_recode1a)$alleleprobs <- TRUE
+```
+
+
+
+
+Recoding #2:
+
+AA = 1
+AB = 2
+BB = 0
+
+
+```{r}
+probs_recode1 <- lapply(X = probs, FUN = function(x){
+  ab <- x[ , 2, ]
+  bb <- x[ , 3, ]
+  x[ , 2, ] <- bb
+  x[ , 3, ] <- ab
+  return(x)
+})
+attributes(probs_recode1) <- attributes(probs)
+```
+
+```{r}
+probs_recode2 <- lapply(X = probs, FUN = function(x){
+  ab <- x[ , 2, ]
+  aa <- x[ , 1, ]
+  x[ , 2, ] <- aa
+  x[ , 1, ] <- ab
+  return(x)
+})
+attributes(probs_recode2) <- attributes(probs)
+```
+
+
+
+## QTL Scans
+
+Now, we can perform the QTL scans.
+
+
+```{r}
+s1out <- qtl2::scan1(genoprobs = probs_recode1, 
+                     pheno = pheno[, 1:3], 
+                     kinship = kinship, 
+                     addcovar = cbind(batch, pheno$sex), 
+                     cores = 0
+                     )
+qtl2::find_peaks(s1out, map = map, threshold = 3)
+```
+
+```{r}
+s1out <- qtl2::scan1(genoprobs = probs_recode2, 
+                     pheno = pheno[, 1:3], 
+                     kinship = kinship, 
+                     addcovar = cbind(batch, pheno$sex), 
+                     cores = 0, 
+                     )
+qtl2::find_peaks(s1out, map = map, threshold = 3)
+```
+
+```{r}
+qtl2::scan1(genoprobs = probs_recode1a, 
+                     pheno = pheno[, 1:3], 
+                     kinship = kinship, 
+                     addcovar = cbind(batch, pheno$sex), 
+                     cores = 1
+                     ) %>%
+  qtl2::find_peaks(map = map, threshold = 3)
+```
+
+## Use qtl with EM algorithm
+
+Avoiding hk methods, we resort to using the original qtl R package because it has encoded options to do EM algorithm instead of HK. 
+
+This requires a fair amount of formatting of R objects.
+
+First, we format the genotypes object. We read from the rds file a matrix of genotype probabilities. Now, we'll "call" the genotype (as A, B, or Het) for every subject at every marker.
+
+
+
+```{r}
+pr <- lapply(X = probs, FUN = function(x){
+  foo <- apply(MARGIN = c(1, 3), X = x, FUN = which.max)
+})
+do.call("cbind", pr) -> pr_wide
+names(pr_wide) <- names(unlist(map))
+dat <- cbind(pheno[, 1:4], batch, pr_wide)
+# make ints - which chrom is each marker on??
+## Get lenghts
+lengths <- sapply(FUN = length, X = map)
+foo <- list()
+chr_names <- c(1:19, "X")
+for (i in 1:20){
+  foo[[i]] <- rep(chr_names[i], each = lengths[i])
+}
+map_for_csv <- c(rep("", 7),unlist(map))
+ints_pre <- do.call("c", foo) 
+ints <- c(rep("", 7), ints_pre)
+dd<- rbind(ints ,map_for_csv, dat)
+colnames(dd)[- c(1:7)] <- names(unlist(map))
+qtl2convert::write2csv(dd, filename = "f2dat.csv", comment = paste0("This csv file created by Frederick Boehm on ", lubridate::now()), overwrite = TRUE)
+```
+
+```{r}
+cr <- qtl::read.cross(format = "csv", 
+                file = "f2dat.csv", 
+                genotypes = 1:3, 
+                comment.char = "#", estimate.map = TRUE)
+```
+
+
+
+```{r}
+qtl::scanone(cross = cr, model = "normal", method = "em", pheno.col = 1, addcovar = cr$pheno[, 4:7]) %>%
+plot()
+```
+
+
+
+```{r}
+s1out <- qtl::scanone(cross = cr, pheno.col = 2, model = "normal", method = "em", addcovar = cr$pheno[, 4:7]) %>%
+plot()
+```
+
+```{r}
+s1out <- qtl::scanone(cross = cr, pheno.col = 3, model = "normal", method = "em", addcovar = cr$pheno[, 4:7]) %>%
+plot()
+```
+
+

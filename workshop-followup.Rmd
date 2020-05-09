@@ -1,0 +1,35 @@
+---
+title: "Followup on genotyping errors and map expansion"
+author: "Frederick J. Boehm"
+date: "3/17/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Genotyping errors
+
+Abbas asked why, for one F2 mouse and one marker, you could see genotype 
+probabilities of 1/2, 1/4, and 1/4, even though we used a nonzero genotyping 
+error probability. I believe that the answer is that, for a single mouse at a 
+single marker, there either is a genotyping error or there isn't. In other 
+words, we either use the observed genotype - say that called from a SNP array - 
+or we declare an error and assign a distinct genotype to that mouse at that 
+marker. In this sense, the error probability isn't seen in the resulting 
+genotype probabilities because we've accounted for it at an earlier step in the 
+procedure.
+
+## Map expansion
+
+What is it? I still don't fully understand this. Map expansion occurs when 
+the genetic distance between two markers is measured in distinct subjects or 
+lines. Typically caused by appearance of multiple meiotic recombinations. 
+Genotyping errors, because they can indicate meiotic recombinations, may 
+also give rise to map expansion. 
+
+
+
+
+

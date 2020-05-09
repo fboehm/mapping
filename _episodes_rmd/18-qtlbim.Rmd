@@ -1,0 +1,67 @@
+---
+title: "qtlbim analysis in CC0001 by CC042 F2 mice"
+teaching: 30
+exercises: 30
+questions:
+- ""
+objectives:
+- Perform a basic QTL analysis.
+- Identify QTL with a genome scan.
+keypoints:
+- "."
+- "."
+source: Rmd
+---
+
+```{r, include=TRUE}
+source("../bin/chunk-options.R")
+knitr_fig_path("18-")
+library(magrittr)
+```
+
+```{r}
+cr <- qtl::read.cross(format = "csv", 
+                file = "f2dat.csv", 
+                genotypes = 1:3, 
+                comment.char = "#", estimate.map = FALSE) %>%
+  subset(chr = 1:19) %>% # X chr doesn't work with qtlbim
+  qtlbim::qb.genoprob()
+```
+
+```{r}
+library(qtlbim)
+```
+
+```{r}
+qbmc1 <- qb.mcmc(cross = cr, pheno.col = 1, seed = 3448084)
+qbmc2 <- qb.mcmc(cross = cr, pheno.col = 2, seed = 3448084)
+qbmc3 <- qb.mcmc(cross = cr, pheno.col = 3, seed = 3448084)
+
+```
+
+```{r}
+foo <- qb.scanone(qbmc, type = "estimate")
+class(foo) <- c("scanone", "data.frame")
+plot(foo, chr = 7)
+```
+```{r}
+qbs1 <- qb.scanone(qbmc1, pheno.col = 1)
+qb.hpdone(qbmc1, level = 0.8)
+qb.hpdone(qbmc2)
+```
+
+```{r}
+qb.bf(qbmc1, item = "pattern")[[1]] # to display result, put [[1]] at end
+qb.best(qbmc1)[[1]]
+```
+
+Notice the absence of interaction QTLs above. All are main effects!
+
+
+```{r}
+qbmc2 <- qb.mcmc(cross = cr, pheno.col = 2, seed = 3448084, data = qb.data(cr, pheno.col = 2, fixcov = 4:8))
+```
+
+
+
+
